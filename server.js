@@ -22,7 +22,7 @@ let alunos = [
 ];
 
 // GET - Listar todos os alunos
-app.get("/alunos", (req, res) => {
+app.get("/aluno", (req, res) => {
     res.status(200).json(alunos);
 });
 
@@ -37,6 +37,7 @@ app.get("/alunos/:id", (req, res) => {
             mensagem: "Aluno não encontrado."
         });
     }
+    res.status(200).json(aluno);
 })
 
 // POST = Cadastrar aluno
@@ -109,5 +110,5 @@ app.delete("/aluno/:id", (req, res) => {
 
 // Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`API excutando em http:/localhost:${PORT}`)
+    console.log(`API excutando em http://localhost:${PORT}`)
 });
