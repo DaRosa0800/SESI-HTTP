@@ -6,10 +6,10 @@ app.use(express.json());
 
 const PORT = 3000;
 
-let alunos = [ 
+let alunos = [
     {
-        id: 1,
-        nome: "Ana",
+        id: 1, 
+        nome: "Ana", 
         email: "ana@email.com",
         turma: "TDS2026"
     },
@@ -22,7 +22,7 @@ let alunos = [
 ];
 
 // GET - Listar todos os alunos
-app.get("/aluno", (req, res) => {
+app.get("/alunos", (req, res) => {
     res.status(200).json(alunos);
 });
 
@@ -33,14 +33,14 @@ app.get("/alunos/:id", (req, res) => {
     const aluno = alunos.find(a => a.id === id);
 
     if (!aluno){
-        return req.status(404).json({
+        return res.status(404).json({
             mensagem: "Aluno não encontrado."
         });
     }
     res.status(200).json(aluno);
 })
 
-// POST = Cadastrar aluno
+// POST - Cadastrar aluno
 app.post("/alunos", (req, res) => {
     const { nome, email, turma } = req.body;
 
@@ -60,21 +60,21 @@ app.post("/alunos", (req, res) => {
 
     alunos.push(novoAluno);
     res.status(200).json(novoAluno);
-})
+});
 
-// PUT = Atualizar aluno
+// PUT - Atualizar aluno
 app.put("/aluno/:id", (req, res) => {
     const id = Number(req.params.id);
 
-    const indice = alunos.findIndex(a => a.id ===id);
+    const indice = alunos.findIndex(a => a.id === id);
 
     if(indice === -1) {
         return res.status(404).json({
-            mensagem: "Aluno não encontrado"
+            mensagem: "Aluno não encontrado"         
         });
     }
 
-    const {nome, email, turma} = req.body;
+    const { nome, email, turma } = req.body;
 
     if(!nome || !email || !turma) {
         return res.status(400).json({
@@ -82,7 +82,7 @@ app.put("/aluno/:id", (req, res) => {
         });
     }
 
-    alunos(indice) = {
+    alunos[indice] = {
         id,
         nome,
         email,
@@ -92,7 +92,7 @@ app.put("/aluno/:id", (req, res) => {
     res.status(200).json(alunos[indice]);
 });
 
-// DELETE - Excluir aluno - desafio montar estrutura
+// DELETE - Excluir aluno
 app.delete("/aluno/:id", (req, res) => {
     const id = Number(req.params.id);
 
@@ -101,14 +101,38 @@ app.delete("/aluno/:id", (req, res) => {
     if(!existe) {
         res.status(404).json({
             mensagem: "Aluno não encontrado"
-        })
+        });
     }
-    
+
     alunos = alunos.filter(a => a.id !== id);
     res.status(204).send();
 });
 
+//PATCH - Editar pouca coisa
+app.patch("/aluno/:id", (req, res) => {
+    const id = Number(req.params.id)
+
+    const indice = alunos.findIndex(a => a.id ===id);
+    
+    if(indice === -1 ){
+        return res.status(404).json({
+            mensagem: "Aluno não encontrado"
+        });
+    }
+    
+    const {nome, email, turma } = req.body;
+
+    if (nome !== undefined) alunos[indice].nome = nome;
+    if (email !== undefined) alunos[indice].email = email;
+    if (turma !== undefined) alunos[indice].turma = turma;
+
+    return res.status(200).json({
+        mensagem: "Aluno atualizado com sucesso!",
+        aluno: alunos[indice]
+    })
+})
+
 // Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`API excutando em http://localhost:${PORT}`)
+    console.log(`API executando em http://localhost:${PORT}`);
 });
